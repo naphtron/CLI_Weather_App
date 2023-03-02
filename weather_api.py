@@ -11,8 +11,9 @@
 
 import argparse
 from configparser import ConfigParser
-from urllib import parse, request
+from urllib import parse, request, error
 import json
+import sys
 
 BASE_WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather"
 
@@ -78,7 +79,15 @@ def get_weather_data(query_url):
     Returns:
         dict: Weather information for a specific city
     """
-    response = request.urlopen(query_url)
+    try:
+        response = request.urlopen(query_url)
+    except error.HTTPError as http_error:
+        if http_error.code == 401:  # 401 - Unauthorized
+            sys.exit("Access denied. Check your API key.")
+        elif http_error.code == 404:  # 404 - Not Found
+            sys.exit("Can't find weather data for this city.")
+        else:
+            sys.exit(f"Something went wrong... ({http_error.code})")
     data = response.read()
     return json.loads(data)
 
@@ -88,5 +97,5 @@ if __name__ == "__main__":
     # read_user_cli_args()
     user_args = read_user_cli_args()
     query_url = build_weather_query(user_args.city, user_args.imperial)
-    print(query_url)
-    print(user_args.city, user_args.imperial)
+    weather_data = get_weather_data(query_url)
+    print(weather_data)
