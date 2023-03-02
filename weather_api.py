@@ -11,7 +11,8 @@
 
 import argparse
 from configparser import ConfigParser
-from urllib import parse
+from urllib import parse, request
+import json
 
 BASE_WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather"
 
@@ -66,6 +67,21 @@ def build_weather_query(city_input, imperial=False):
         f"&units={units}&appid={api_key}"
     )
     return url
+
+
+def get_weather_data(query_url):
+    """Makes an API request to a URL and returns the data as a Python object.
+
+    Args:
+        query_url (str): URL formatted for OpenWeather's city name endpoint
+
+    Returns:
+        dict: Weather information for a specific city
+    """
+    response = request.urlopen(query_url)
+    data = response.read()
+    return json.loads(data)
+
 
 
 if __name__ == "__main__":
