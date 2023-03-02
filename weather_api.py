@@ -89,7 +89,11 @@ def get_weather_data(query_url):
         else:
             sys.exit(f"Something went wrong... ({http_error.code})")
     data = response.read()
-    return json.loads(data)
+
+    try:
+        return json.loads(data)
+    except json.JSONDecodeError:
+        sys.exit("Couldn't read the server response.")
 
 
 
