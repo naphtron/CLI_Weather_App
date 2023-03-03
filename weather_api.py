@@ -16,6 +16,7 @@ import json
 import sys
 
 BASE_WEATHER_API_URL = "http://api.openweathermap.org/data/2.5/weather"
+PADDING = 20
 
 def _get_api_key() -> str:
     """Fetch the API key from your configuration file.
@@ -108,8 +109,8 @@ def display_weather_info(weather_data, imperial=False):
     weather_description = weather_data["weather"][0]["description"]
     temperature = weather_data["main"]["temp"]
 
-    print(f"{city}", end="")
-    print(f"\t{weather_description.capitalize()}", end=" ")
+    print(f"{city:^{PADDING}}", end="")
+    print(f"\t{weather_description.capitalize():^{PADDING}}", end=" ")
     print(f"({temperature}°{'F' if imperial else 'C'})")
 
 
@@ -118,4 +119,6 @@ if __name__ == "__main__":
     user_args = read_user_cli_args()
     query_url = build_weather_query(user_args.city, user_args.imperial)
     weather_data = get_weather_data(query_url)
-    print(weather_data)
+    # info = display_weather_info(weather_data)
+    print(user_args.imperial)
+    display_weather_info(weather_data, user_args.imperial)
