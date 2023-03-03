@@ -95,6 +95,22 @@ def get_weather_data(query_url):
     except json.JSONDecodeError:
         sys.exit("Couldn't read the server response.")
 
+def display_weather_info(weather_data, imperial=False):
+    """Prints formatted weather information about a city.
+
+    Args:
+        weather_data (dict): API response from OpenWeather by city name
+        imperial (bool): Whether or not to use imperial units for temperature
+
+    More information at https://openweathermap.org/current#name
+    """
+    city = weather_data["name"]
+    weather_description = weather_data["weather"][0]["description"]
+    temperature = weather_data["main"]["temp"]
+
+    print(f"{city}", end="")
+    print(f"\t{weather_description.capitalize()}", end=" ")
+    print(f"({temperature}°{'F' if imperial else 'C'})")
 
 
 if __name__ == "__main__":
